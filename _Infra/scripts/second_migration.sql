@@ -28,16 +28,6 @@ comment on column parameter_types.id_unit is 'Код единицы измере
 alter table equipment add column description varchar(255);
 comment on column equipment.description is 'Расширенное описание оборудования';
 
-delete from parameters;
-
-alter table parameters drop column name;
-alter table parameters drop column value;
-alter table parameters add column id_parameter_type int references parameter_types(id_parameter_type);
-alter table parameters add column value decimal(10, 2);
-
-comment on column parameters.id_parameter_type is 'Код типа параметра';
-comment on column parameters.value is 'Значение параметра';
-
 update equipment set description = 'Десантный метео комплекс' where name = 'ДМК';
 update equipment set description = 'Ветровое ружье' where name = 'ВР';
 
@@ -64,28 +54,35 @@ insert into parameter_types(id_parameter_type, name, id_unit) values
     (5, 'скорость ветра', 5),
     (6, 'дальность сноса пуль', 1);
 
-insert into parameters(id_parameters, id_packs, id_parameter_type, value) values
-	(1,1,1,100),
-	(2,1,2,20),
-	(3,1,3,700),
-	(4,1,4,0),
-	(5,1,5,0),
-	(6,2,1,110),
-	(7,2,2,15),
-	(8,2,3,750),
-	(9,2,4,10),
-	(10,2,5,5),
-	(11,3,1,120),
-	(12,3,2,10),
-	(13,3,3,780),
-	(14,3,4,20),
-	(15,3,6,3);
+-- Изменение таблицы parameters
+alter table parameters add column id_parameter_type int references parameter_types(id_parameter_type);
+alter table parameters add column numeric_value decimal(10, 2);
 
+update parameters set
+	id_parameter_type=case
+	when name like 'Высота%' then 1
+	when name like 'Температура' then 2
+	when name like 'Давление' then 3
+	when name like 'Направление ветра' then 4
+	when name like 'Скорость ветра' then 5
+	when name like 'Дальность сноса пуль' then 6
+	end,
+	numeric_value=cast(value as decimal(10,2));
+
+alter table parameters drop column name;
+alter table parameters drop column value;
+	
+alter table parameters rename column numeric_value to value;
+
+comment on column parameters.id_parameter_type is 'Код типа параметра';
+comment on column parameters.value is 'Значение параметра';
+
+-- Запрос
 select
 	packs.measurement_date as "Дата измерения",
 	packs.id_packs as "Номер пачки",
 	users.full_name as "Фио сотрудника",
-	parameter_types.name || ' (' || measurement_units.name || ')' as "Наименование параметра и ед. измерения",
+	parameter_types.name || ' (' || measurement_units.name || ')' as "Наименование и ед. изм.",
 	parameters.value as "Значение"
 from packs
 inner join users
@@ -96,4 +93,4 @@ inner join parameter_types
 	on parameters.id_parameter_type=parameter_types.id_parameter_type
 inner join measurement_units
 	on parameter_types.id_unit=measurement_units.id_unit
-order by packs.id_packs,parameters.id_parameters;	
+order by packs.id_packs,parameters.id_parameters;
