@@ -1,2 +1,4 @@
 .env
 _Infra/pgadmin/
+_Infra/scripts/Studies/
+example*
