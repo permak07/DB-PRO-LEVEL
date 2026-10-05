@@ -1,4 +1,4 @@
--- dml-скрипт написанный Алиса AI
+-- dml-скрипт напи
 insert into packs (id_packs, name, id_users, id_equipment, measurement_date) values
     (4, 'Пачка ДМК №4', 1, 1, '2026-09-22 08:00:00'),
     (5, 'Пачка ВР №5', 1, 2, '2026-09-22 11:30:00'),
@@ -72,22 +72,24 @@ insert into parameters (id_parameters, id_parameter_type, value, id_packs) value
 -- Каждый пользователь имеет одинаковое количество измерений?
 select 
     users.full_name as "Пользователь", 
-    count(packs.id_packs) as "Количество измерений"
+    count(parameters.id_parameters) as "Количество измерений"
 from users
 left join packs 
     on users.id_users = packs.id_users
+left join parameters
+    on packs.id_packs = parameters.id_packs
 group by users.full_name;
 
 -- 2 запрос
 -- У нас нет пустых пачек измерения?
 select 
     packs.id_packs as "Номер пачки", 
-    count(parameters.id_parameters) as "Кол-во параметров"
+    coalesce(count(parameters.id_parameters), 0) as "Кол-во параметров"
 from packs
 left join parameters 
     on packs.id_packs = parameters.id_packs
 group by packs.id_packs
-having count(parameters.id_parameters) = 0;
+having coalesce(count(parameters.id_parameters), 0) = 0;
 
 -- 3 запрос
 -- Каждая пачка измерений содержит полное количество параметров (5 шт)?
