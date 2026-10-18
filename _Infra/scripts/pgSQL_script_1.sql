@@ -10,7 +10,7 @@ begin
     drop table if exists users cascade;
     drop table if exists equipment cascade;
     drop table if exists post cascade;
-    drop table if exists temperature cascade;
+	drop table if exists temperature_correction cascade;
 
     drop sequence if exists seq_post cascade;
     drop sequence if exists seq_equipment cascade;
@@ -20,7 +20,6 @@ begin
     drop sequence if exists seq_measurement_units cascade;
     drop sequence if exists seq_parameter_types cascade;
     drop sequence if exists seq_parameters cascade;
-    drop sequence if exists seq_temperature cascade;
 	
     -- транзакция 1: структура таблиц и счетчики
     create table post(
@@ -73,12 +72,12 @@ begin
     );
     
     -- Таблица Расчёта температур
-    create table temperature(
-        id_temp integer not null,
-        temp_range varchar(50) not null,
-        value decimal(5,1) not null
-    );
-
+	create table temperature_correction
+		(
+		   temperature numeric(8,2) not null,
+		   correction numeric(8,2) not null
+		);
+		
     -- привязываем счетчики
     create sequence seq_post;
     alter table post alter column id_post set default nextval('seq_post');
@@ -103,9 +102,6 @@ begin
     
     create sequence seq_parameters;
     alter table parameters alter column id_parameters set default nextval('seq_parameters');
-    
-    create sequence seq_temperature;
-    alter table temperature alter column id_temp set default nextval('seq_temperature');
     
     commit;
 
@@ -138,9 +134,8 @@ begin
 	        (110, 2, 1), (15, 2, 2), (750, 2, 3), (10, 2, 4), (5, 2, 5),
 	        (120, 3, 1), (10, 3, 2), (780, 3, 3), (20, 3, 4), (3, 3, 6);
 	
-	    insert into temperature (temp_range, value) values
-	        ('Ниже 0', 0.0), ('0 - 5', 0.5), ('10 - 15', 1.0),
-	        ('20', 1.5), ('25', 2.0), ('30', 3.5), ('40', 4.5);
+	    insert into temperature_correction(temperature, correction)
+		values(0, 0.5),(5, 0.5),(10, 1), (20,1), (25, 2), (30, 3.5), (40, 4.5);
 	
 	    commit;
 	end;
@@ -156,7 +151,7 @@ begin
 	    alter table measurement_units add primary key (id_unit);
 	    alter table parameter_types add primary key (id_parameter_type);
 	    alter table parameters add primary key (id_parameters);
-	    alter table temperature add primary key (id_temp);
+	    alter table temperature_correction add primary key (temperature);
 	
 	    -- связи
 	    alter table users add foreign key (id_post) references post(id_post);
@@ -169,9 +164,6 @@ begin
 	    
 	    alter table parameters add foreign key (id_packs) references packs(id_packs);
 	    alter table parameters add foreign key (id_parameter_type) references parameter_types(id_parameter_type);
-	
-	    -- ограничения
-	    alter table temperature add constraint chk_correction check (value >= 0);
 	
 	    commit;
 	end;
