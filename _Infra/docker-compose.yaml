@@ -1,4 +1,3 @@
-version: "3.0"
 services:
   # https://hub.docker.com/_/postgres
 
@@ -31,6 +30,22 @@ services:
     restart: always
     depends_on:
     - postgres
+
+  # https://hub.docker.com/_/microsoft-mssql-server
+  mssql2017:
+    container_name: "mssql2017"
+    image: mcr.microsoft.com/mssql/server:2017-latest
+    environment:
+      ACCEPT_EULA: Y
+      MSSQL_SA_PASSWORD: ${MSSQL_PASS}
+    ports:
+      - "1433:1433"
+    volumes:
+      - ./mssql-data:/var/opt/mssql/data
+      - ./backup:/backup
+    networks:
+      - pgdata
+    restart: always
 
 networks:
   pgdata:

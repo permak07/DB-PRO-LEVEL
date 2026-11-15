@@ -1,0 +1,165 @@
+// ER-диаграмма 2: Анализ продажи товара
+digraph ER2 {
+  rankdir=LR;
+  splines=polyline;
+  nodesep=0.5;
+  ranksep=1.2;
+  graph [fontname="DejaVu Sans", fontsize=14, label="Анализ продажи товара (шаг: месяц)\nоранжевый — факты, голубой — справочники, серый — пустые", labelloc=t, labeljust=c];
+  node [shape=none, fontname="DejaVu Sans", fontsize=10];
+  edge [fontname="DejaVu Sans", fontsize=9, color="#555555", arrowsize=0.9];
+
+  jr [label=<
+    <table border="0" cellborder="1" cellspacing="0" cellpadding="4">
+    <tr><td bgcolor="#FDEBD0"><b>journal</b><br/><font point-size="8">кассовый журнал · 225 681 строка</font></td></tr>
+    <tr><td align="left"><u>transnumber</u> : bigint (PK)</td></tr>
+    <tr><td align="left">transtype → transtype</td></tr>
+    <tr><td align="left">receiptn (номер чека)</td></tr>
+    <tr><td align="left">loginid → personnel</td></tr>
+    <tr><td align="left">customerid → clients</td></tr>
+    <tr><td align="left">discountgroup → discountgroup</td></tr>
+    <tr><td align="left">cspcid, quantity, price, amount</td></tr>
+    <tr><td align="left">discount, discountamount, dater</td></tr>
+    </table>
+  >];
+
+  tt [label=<
+    <table border="0" cellborder="1" cellspacing="0" cellpadding="4">
+    <tr><td bgcolor="#D6EAF8"><b>transtype</b><br/><font point-size="8">типы операций · 81 строка</font></td></tr>
+    <tr><td align="left"><u>transtypeid</u> : int (PK)</td></tr>
+    <tr><td align="left">transgroupid</td></tr>
+    <tr><td align="left">description (101 = PLU Sales)</td></tr>
+    </table>
+  >];
+
+  pers [label=<
+    <table border="0" cellborder="1" cellspacing="0" cellpadding="4">
+    <tr><td bgcolor="#D6EAF8"><b>personnel</b><br/><font point-size="8">кассиры · 109 строк</font></td></tr>
+    <tr><td align="left"><u>personid</u> : int (PK)</td></tr>
+    <tr><td align="left">lastname, firstname</td></tr>
+    </table>
+  >];
+
+  cl [label=<
+    <table border="0" cellborder="1" cellspacing="0" cellpadding="4">
+    <tr><td bgcolor="#D6EAF8"><b>clients</b><br/><font point-size="8">покупатели · 1 494 строки</font></td></tr>
+    <tr><td align="left"><u>id</u> : bigint (PK)</td></tr>
+    <tr><td align="left">clientid, lastname, firstname</td></tr>
+    <tr><td align="left">clientgroup → clientgroup</td></tr>
+    <tr><td align="left">membershipid → membership</td></tr>
+    <tr><td align="left">points, bonus</td></tr>
+    </table>
+  >];
+
+  cg [label=<
+    <table border="0" cellborder="1" cellspacing="0" cellpadding="4">
+    <tr><td bgcolor="#D6EAF8"><b>clientgroup</b><br/><font point-size="8">группы клиентов · 16 строк</font></td></tr>
+    <tr><td align="left"><u>clientgroupid</u> : int (PK)</td></tr>
+    <tr><td align="left">description, discount</td></tr>
+    </table>
+  >];
+
+  mb [label=<
+    <table border="0" cellborder="1" cellspacing="0" cellpadding="4">
+    <tr><td bgcolor="#D6EAF8"><b>membership</b><br/><font point-size="8">членство · 0 строк</font></td></tr>
+    <tr><td align="left">id</td></tr>
+    <tr><td align="left">description</td></tr>
+    </table>
+  >];
+
+  dg [label=<
+    <table border="0" cellborder="1" cellspacing="0" cellpadding="4">
+    <tr><td bgcolor="#D6EAF8"><b>discountgroup</b><br/><font point-size="8">группы скидок · 0 строк</font></td></tr>
+    <tr><td align="left">discountgroup</td></tr>
+    <tr><td align="left">description, discount</td></tr>
+    </table>
+  >];
+
+  jdet [label=<
+    <table border="0" cellborder="1" cellspacing="0" cellpadding="4">
+    <tr><td bgcolor="#FDEBD0"><b>bm_Journal_Details</b><br/><font point-size="8">детали заказов · 1 089 641 строка</font></td></tr>
+    <tr><td align="left">SourceID → journal (FK)</td></tr>
+    <tr><td align="left">ProductID → product (FK)</td></tr>
+    <tr><td align="left">BludoID → product (FK)</td></tr>
+    <tr><td align="left">RangeID → size (FK)</td></tr>
+    </table>
+  >];
+
+  prod [label=<
+    <table border="0" cellborder="1" cellspacing="0" cellpadding="4">
+    <tr><td bgcolor="#D6EAF8"><b>product</b><br/><font point-size="8">товары · 1 545 строк</font></td></tr>
+    <tr><td align="left"><u>id</u> : bigint (PK)</td></tr>
+    <tr><td align="left">productid, description</td></tr>
+    <tr><td align="left">CategoryID → category (FK)</td></tr>
+    <tr><td align="left">pricegroupid → pricegroup</td></tr>
+    <tr><td align="left">SizeID → size</td></tr>
+    <tr><td align="left">price1…price4, cost</td></tr>
+    </table>
+  >];
+
+  cat [label=<
+    <table border="0" cellborder="1" cellspacing="0" cellpadding="4">
+    <tr><td bgcolor="#D6EAF8"><b>category</b><br/><font point-size="8">категории · 158 строк</font></td></tr>
+    <tr><td align="left"><u>id</u> : bigint (PK)</td></tr>
+    <tr><td align="left">description</td></tr>
+    </table>
+  >];
+
+  sz [label=<
+    <table border="0" cellborder="1" cellspacing="0" cellpadding="4">
+    <tr><td bgcolor="#D6EAF8"><b>size</b><br/><font point-size="8">фасовки · 78 строк</font></td></tr>
+    <tr><td align="left"><u>ID</u> : bigint (PK)</td></tr>
+    <tr><td align="left">sizeid, description</td></tr>
+    </table>
+  >];
+
+  pg [label=<
+    <table border="0" cellborder="1" cellspacing="0" cellpadding="4">
+    <tr><td bgcolor="#D6EAF8"><b>pricegroup</b><br/><font point-size="8">группы цен · 4 строки</font></td></tr>
+    <tr><td align="left"><u>pricegroupid</u> : int (PK)</td></tr>
+    <tr><td align="left">description (Закупочная…)</td></tr>
+    </table>
+  >];
+
+  pt [label=<
+    <table border="0" cellborder="1" cellspacing="0" cellpadding="4">
+    <tr><td bgcolor="#EAECEE"><b>pricetypes</b><br/><font point-size="8">типы цен · 0 строк</font></td></tr>
+    <tr><td align="left">pricegroupid → pricegroup</td></tr>
+    <tr><td align="left">description, markup</td></tr>
+    </table>
+  >];
+
+  pr [label=<
+    <table border="0" cellborder="1" cellspacing="0" cellpadding="4">
+    <tr><td bgcolor="#FDEBD0"><b>PreReceipt</b><br/><font point-size="8">предчеки · 10 767 строк</font></td></tr>
+    <tr><td align="left"><u>TransNumber</u> : numeric (PK)</td></tr>
+    <tr><td align="left">TransType → transtype</td></tr>
+    <tr><td align="left">FIO, Phone, NumPersons</td></tr>
+    <tr><td align="left">TakeOut, TimeReady</td></tr>
+    </table>
+  >];
+
+  gc [label=<
+    <table border="0" cellborder="1" cellspacing="0" cellpadding="4">
+    <tr><td bgcolor="#D6EAF8"><b>giftcards</b><br/><font point-size="8">подарочные карты · 15 строк</font></td></tr>
+    <tr><td align="left"><u>id</u> : varchar (PK)</td></tr>
+    <tr><td align="left">initamount, amount</td></tr>
+    <tr><td align="left">receiptnsold, clerkidsold</td></tr>
+    </table>
+  >];
+
+  jr -> tt [arrowtail=tee, arrowhead=crow, dir=both, label="1:N"];
+  jr -> pers [arrowtail=tee, arrowhead=crow, dir=both, label="1:N"];
+  jr -> cl [arrowtail=tee, arrowhead=crow, dir=both, label="1:N"];
+  jr -> dg [arrowtail=tee, arrowhead=crow, dir=both, label="1:N", style=dashed];
+  jdet -> jr [arrowtail=tee, arrowhead=crow, dir=both, label="1:N"];
+  jdet -> prod [arrowtail=tee, arrowhead=crow, dir=both, label="1:N (ProductID)"];
+  jdet -> prod [arrowtail=tee, arrowhead=crow, dir=both, label="1:N (BludoID)", style=dashed, constraint=false];
+  jdet -> sz [arrowtail=tee, arrowhead=crow, dir=both, label="1:N"];
+  prod -> cat [arrowtail=tee, arrowhead=crow, dir=both, label="1:N"];
+  prod -> pg [arrowtail=tee, arrowhead=crow, dir=both, label="1:N"];
+  prod -> sz [arrowtail=tee, arrowhead=crow, dir=both, label="1:N", style=dashed, constraint=false];
+  cl -> cg [arrowtail=tee, arrowhead=crow, dir=both, label="1:N"];
+  cl -> mb [arrowtail=tee, arrowhead=crow, dir=both, label="1:N"];
+  pt -> pg [arrowtail=tee, arrowhead=crow, dir=both, label="1:N", style=dashed];
+  pr -> tt [arrowtail=tee, arrowhead=crow, dir=both, label="1:N"];
+}

@@ -1,0 +1,194 @@
+// ER-диаграмма 5: Анализ остатков
+digraph ER5 {
+  rankdir=LR;
+  splines=polyline;
+  nodesep=0.5;
+  ranksep=1.2;
+  graph [fontname="DejaVu Sans", fontsize=14, label="Анализ остатков (шаг: одна неделя)\nоранжевый — факты, голубой — справочники, серый — legacy/пустые", labelloc=t, labeljust=c];
+  node [shape=none, fontname="DejaVu Sans", fontsize=10];
+  edge [fontname="DejaVu Sans", fontsize=9, color="#555555", arrowsize=0.9];
+
+  so [label=<
+    <table border="0" cellborder="1" cellspacing="0" cellpadding="4">
+    <tr><td bgcolor="#FDEBD0"><b>bm_StorageOperations</b><br/><font point-size="8">движения товаров · 1 031 198 строк</font></td></tr>
+    <tr><td align="left"><u>ID</u> : bigint (PK)</td></tr>
+    <tr><td align="left">DocumentID → bm_JournalBarnetDocs</td></tr>
+    <tr><td align="left">OperationID → bm_StorageOperationsType</td></tr>
+    <tr><td align="left">ProductID → product</td></tr>
+    <tr><td align="left">StorageID → storages</td></tr>
+    <tr><td align="left">VendorID → vendors</td></tr>
+    <tr><td align="left">RangeID → size</td></tr>
+    <tr><td align="left">Count (кол-во), DateAdd</td></tr>
+    </table>
+  >];
+
+  sot [label=<
+    <table border="0" cellborder="1" cellspacing="0" cellpadding="4">
+    <tr><td bgcolor="#D6EAF8"><b>bm_StorageOperationsType</b><br/><font point-size="8">типы операций · 5 строк</font></td></tr>
+    <tr><td align="left"><u>ID</u> : bigint (PK)</td></tr>
+    <tr><td align="left">Description</td></tr>
+    <tr><td align="left">Factor (+1/−1)</td></tr>
+    </table>
+  >];
+
+  sotbl [label=<
+    <table border="0" cellborder="1" cellspacing="0" cellpadding="4">
+    <tr><td bgcolor="#FDEBD0"><b>bm_StorageOperations_Table</b><br/><font point-size="8">детали движений · 30 801 строка</font></td></tr>
+    <tr><td align="left"><u>ID</u> : bigint (PK)</td></tr>
+    <tr><td align="left">DocumentID → bm_JournalBarnetDocs</td></tr>
+    <tr><td align="left">OperationID → bm_StorageOperationsType</td></tr>
+    <tr><td align="left">StorageID → storages</td></tr>
+    <tr><td align="left">ProductID → product</td></tr>
+    <tr><td align="left">BludoID → product (блюдо)</td></tr>
+    <tr><td align="left">Count (кол-во), DateAdd</td></tr>
+    </table>
+  >];
+
+  jd [label=<
+    <table border="0" cellborder="1" cellspacing="0" cellpadding="4">
+    <tr><td bgcolor="#D6EAF8"><b>bm_JournalBarnetDocs</b><br/><font point-size="8">документы · 55 149 строк</font></td></tr>
+    <tr><td align="left"><u>ID</u> : bigint (PK)</td></tr>
+    <tr><td align="left">DocumentTypeID, Period</td></tr>
+    </table>
+  >];
+
+  prod [label=<
+    <table border="0" cellborder="1" cellspacing="0" cellpadding="4">
+    <tr><td bgcolor="#D6EAF8"><b>product</b><br/><font point-size="8">товары · 1 545 строк</font></td></tr>
+    <tr><td align="left"><u>id</u> : bigint (PK)</td></tr>
+    <tr><td align="left">productid, description</td></tr>
+    <tr><td align="left">onhand, closingcount</td></tr>
+    </table>
+  >];
+
+  stor [label=<
+    <table border="0" cellborder="1" cellspacing="0" cellpadding="4">
+    <tr><td bgcolor="#D6EAF8"><b>storages</b><br/><font point-size="8">склады · 1 строка</font></td></tr>
+    <tr><td align="left"><u>id</u> : bigint (PK)</td></tr>
+    <tr><td align="left">description, ResponsibleID</td></tr>
+    </table>
+  >];
+
+  vend [label=<
+    <table border="0" cellborder="1" cellspacing="0" cellpadding="4">
+    <tr><td bgcolor="#D6EAF8"><b>vendors</b><br/><font point-size="8">поставщики · 63 строки</font></td></tr>
+    <tr><td align="left"><u>id</u> : bigint (PK)</td></tr>
+    <tr><td align="left">clientid</td></tr>
+    </table>
+  >];
+
+  sz [label=<
+    <table border="0" cellborder="1" cellspacing="0" cellpadding="4">
+    <tr><td bgcolor="#D6EAF8"><b>size</b><br/><font point-size="8">фасовки · 78 строк</font></td></tr>
+    <tr><td align="left"><u>ID</u> : bigint (PK)</td></tr>
+    <tr><td align="left">description</td></tr>
+    </table>
+  >];
+
+  st [label=<
+    <table border="0" cellborder="1" cellspacing="0" cellpadding="4">
+    <tr><td bgcolor="#EAECEE"><b>stock</b><br/><font point-size="8">текущие остатки (legacy) · 0 строк</font></td></tr>
+    <tr><td align="left">cspcid, productid → product</td></tr>
+    <tr><td align="left">storageid → storages</td></tr>
+    <tr><td align="left">vendorid → vendors</td></tr>
+    <tr><td align="left">quantity, amount, onhand</td></tr>
+    <tr><td align="left">openedq, receivedq, soldq, closedq</td></tr>
+    </table>
+  >];
+
+  sh [label=<
+    <table border="0" cellborder="1" cellspacing="0" cellpadding="4">
+    <tr><td bgcolor="#EAECEE"><b>storagesonhand</b><br/><font point-size="8">остатки по складам · 0 строк</font></td></tr>
+    <tr><td align="left"><u>ID</u> : bigint (PK)</td></tr>
+    <tr><td align="left">productid → product</td></tr>
+    <tr><td align="left">storageid → storages</td></tr>
+    <tr><td align="left">onhand</td></tr>
+    </table>
+  >];
+
+  oh [label=<
+    <table border="0" cellborder="1" cellspacing="0" cellpadding="4">
+    <tr><td bgcolor="#EAECEE"><b>onhand</b><br/><font point-size="8">остатки на руках · 0 строк</font></td></tr>
+    <tr><td align="left">id, storeid</td></tr>
+    <tr><td align="left">productid → product</td></tr>
+    <tr><td align="left">onhand</td></tr>
+    </table>
+  >];
+
+  sc [label=<
+    <table border="0" cellborder="1" cellspacing="0" cellpadding="4">
+    <tr><td bgcolor="#EAECEE"><b>stockcounter</b><br/><font point-size="8">пересчёты · 0 строк</font></td></tr>
+    <tr><td align="left"><u>id</u> : bigint (PK)</td></tr>
+    <tr><td align="left">productid → product</td></tr>
+    <tr><td align="left">vendorid → vendors</td></tr>
+    <tr><td align="left">quantity, shortq, dater</td></tr>
+    </table>
+  >];
+
+  keg [label=<
+    <table border="0" cellborder="1" cellspacing="0" cellpadding="4">
+    <tr><td bgcolor="#EAECEE"><b>keg</b><br/><font point-size="8">кеги · 0 строк</font></td></tr>
+    <tr><td align="left">id</td></tr>
+    <tr><td align="left">productid → product</td></tr>
+    <tr><td align="left">start, sold, poured</td></tr>
+    </table>
+  >];
+
+  cc [label=<
+    <table border="0" cellborder="1" cellspacing="0" cellpadding="4">
+    <tr><td bgcolor="#EAECEE"><b>closingcount</b><br/><font point-size="8">пересчёт при закрытии · 0 строк</font></td></tr>
+    <tr><td align="left"><u>id</u> : bigint (PK)</td></tr>
+    <tr><td align="left">storeid → environment (FK)</td></tr>
+    <tr><td align="left">productid → product (FK)</td></tr>
+    <tr><td align="left">onhand, closingcount</td></tr>
+    </table>
+  >];
+
+  env [label=<
+    <table border="0" cellborder="1" cellspacing="0" cellpadding="4">
+    <tr><td bgcolor="#D6EAF8"><b>environment</b><br/><font point-size="8">окружение · справочник</font></td></tr>
+    <tr><td align="left"><u>id</u> : bigint (PK)</td></tr>
+    <tr><td align="left">enviro1, enviro1name</td></tr>
+    </table>
+  >];
+
+  bp [label=<
+    <table border="0" cellborder="1" cellspacing="0" cellpadding="4">
+    <tr><td bgcolor="#FDEBD0"><b>beginperiod</b><br/><font point-size="8">начала периодов · 23 строки</font></td></tr>
+    <tr><td align="left">id</td></tr>
+    <tr><td align="left">datestart</td></tr>
+    </table>
+  >];
+
+  sp [label=<
+    <table border="0" cellborder="1" cellspacing="0" cellpadding="4">
+    <tr><td bgcolor="#FDEBD0"><b>stockperiod</b><br/><font point-size="8">диапазоны цен/объёмов · 56 строк</font></td></tr>
+    <tr><td align="left"><u>id</u> : bigint (PK)</td></tr>
+    <tr><td align="left">storeid, price</td></tr>
+    <tr><td align="left">quantityin, quantityout</td></tr>
+    <tr><td align="left">datestart, datefinish</td></tr>
+    </table>
+  >];
+
+  so -> jd [arrowtail=tee, arrowhead=crow, dir=both, label="1:N"];
+  so -> sot [arrowtail=tee, arrowhead=crow, dir=both, label="1:N"];
+  so -> prod [arrowtail=tee, arrowhead=crow, dir=both, label="1:N"];
+  so -> stor [arrowtail=tee, arrowhead=crow, dir=both, label="1:N"];
+  so -> vend [arrowtail=tee, arrowhead=crow, dir=both, label="1:N"];
+  so -> sz [arrowtail=tee, arrowhead=crow, dir=both, label="1:N"];
+  sotbl -> jd [arrowtail=tee, arrowhead=crow, dir=both, label="1:N"];
+  sotbl -> sot [arrowtail=tee, arrowhead=crow, dir=both, label="1:N"];
+  sotbl -> prod [arrowtail=tee, arrowhead=crow, dir=both, label="1:N"];
+  sotbl -> stor [arrowtail=tee, arrowhead=crow, dir=both, label="1:N"];
+  st -> prod [arrowtail=tee, arrowhead=crow, dir=both, label="1:N", style=dashed];
+  st -> stor [arrowtail=tee, arrowhead=crow, dir=both, label="1:N", style=dashed];
+  st -> vend [arrowtail=tee, arrowhead=crow, dir=both, label="1:N", style=dashed];
+  sh -> prod [arrowtail=tee, arrowhead=crow, dir=both, label="1:N", style=dashed];
+  sh -> stor [arrowtail=tee, arrowhead=crow, dir=both, label="1:N", style=dashed];
+  oh -> prod [arrowtail=tee, arrowhead=crow, dir=both, label="1:N", style=dashed];
+  sc -> prod [arrowtail=tee, arrowhead=crow, dir=both, label="1:N", style=dashed];
+  sc -> vend [arrowtail=tee, arrowhead=crow, dir=both, label="1:N", style=dashed];
+  keg -> prod [arrowtail=tee, arrowhead=crow, dir=both, label="1:N", style=dashed];
+  cc -> env [arrowtail=tee, arrowhead=crow, dir=both, label="1:N", style=dashed];
+  cc -> prod [arrowtail=tee, arrowhead=crow, dir=both, label="1:N", style=dashed];
+}

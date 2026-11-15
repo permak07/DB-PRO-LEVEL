@@ -1,0 +1,203 @@
+// ER-диаграмма 1: Анализ закупки продукции
+digraph ER1 {
+  rankdir=LR;
+  splines=polyline;
+  nodesep=0.5;
+  ranksep=1.2;
+  graph [fontname="DejaVu Sans", fontsize=14, label="Анализ закупки продукции (шаг: месяц)\nоранжевый — факты, голубой — справочники, серый — legacy/пустые", labelloc=t, labeljust=c];
+  node [shape=none, fontname="DejaVu Sans", fontsize=10];
+  edge [fontname="DejaVu Sans", fontsize=9, color="#555555", arrowsize=0.9];
+
+  so [label=<
+    <table border="0" cellborder="1" cellspacing="0" cellpadding="4">
+    <tr><td bgcolor="#FDEBD0"><b>bm_StorageOperations</b><br/><font point-size="8">движения товаров · 1 031 198 строк</font></td></tr>
+    <tr><td align="left"><u>ID</u> : bigint (PK)</td></tr>
+    <tr><td align="left">DocumentID → bm_JournalBarnetDocs</td></tr>
+    <tr><td align="left">OperationID → bm_StorageOperationsType</td></tr>
+    <tr><td align="left">ProductID → product</td></tr>
+    <tr><td align="left">VendorID → vendors</td></tr>
+    <tr><td align="left">StorageID → storages</td></tr>
+    <tr><td align="left">RangeID → size</td></tr>
+    <tr><td align="left">Count (кол-во), Price, Amount</td></tr>
+    <tr><td align="left">Period (YYYYMM), DateAdd</td></tr>
+    </table>
+  >];
+
+  jd [label=<
+    <table border="0" cellborder="1" cellspacing="0" cellpadding="4">
+    <tr><td bgcolor="#FDEBD0"><b>bm_JournalBarnetDocs</b><br/><font point-size="8">документы · 55 149 строк</font></td></tr>
+    <tr><td align="left"><u>ID</u> : bigint (PK)</td></tr>
+    <tr><td align="left">JournalID → bm_JournalType</td></tr>
+    <tr><td align="left">DocumentTypeID → bm_JournalTypeDocuments</td></tr>
+    <tr><td align="left">CompanyID → bm_Companies</td></tr>
+    <tr><td align="left">PersonID → personnel</td></tr>
+    <tr><td align="left">DocumentNumber, Period, Amount</td></tr>
+    </table>
+  >];
+
+  sot [label=<
+    <table border="0" cellborder="1" cellspacing="0" cellpadding="4">
+    <tr><td bgcolor="#D6EAF8"><b>bm_StorageOperationsType</b><br/><font point-size="8">типы операций · 5 строк</font></td></tr>
+    <tr><td align="left"><u>ID</u> : bigint (PK)</td></tr>
+    <tr><td align="left">Description</td></tr>
+    <tr><td align="left">Factor (+1/−1)</td></tr>
+    </table>
+  >];
+
+  jt [label=<
+    <table border="0" cellborder="1" cellspacing="0" cellpadding="4">
+    <tr><td bgcolor="#D6EAF8"><b>bm_JournalType</b><br/><font point-size="8">журналы · 6 строк</font></td></tr>
+    <tr><td align="left"><u>ID</u> : bigint (PK)</td></tr>
+    <tr><td align="left">JournalName</td></tr>
+    </table>
+  >];
+
+  jtd [label=<
+    <table border="0" cellborder="1" cellspacing="0" cellpadding="4">
+    <tr><td bgcolor="#D6EAF8"><b>bm_JournalTypeDocuments</b><br/><font point-size="8">типы документов · 25 строк</font></td></tr>
+    <tr><td align="left"><u>ID</u> : bigint (PK)</td></tr>
+    <tr><td align="left">Description (4 = Поступление)</td></tr>
+    <tr><td align="left">JournalID → bm_JournalType</td></tr>
+    </table>
+  >];
+
+  cmp [label=<
+    <table border="0" cellborder="1" cellspacing="0" cellpadding="4">
+    <tr><td bgcolor="#D6EAF8"><b>bm_Companies</b><br/><font point-size="8">юрлица · 1 строка</font></td></tr>
+    <tr><td align="left"><u>ID</u> : bigint (PK)</td></tr>
+    <tr><td align="left">CompanyName, ShortName</td></tr>
+    <tr><td align="left">INN, KPP, OGRN</td></tr>
+    </table>
+  >];
+
+  vend [label=<
+    <table border="0" cellborder="1" cellspacing="0" cellpadding="4">
+    <tr><td bgcolor="#D6EAF8"><b>vendors</b><br/><font point-size="8">поставщики · 63 строки</font></td></tr>
+    <tr><td align="left"><u>id</u> : bigint (PK)</td></tr>
+    <tr><td align="left">clientid (название)</td></tr>
+    <tr><td align="left">INN, KPP, OGRN</td></tr>
+    <tr><td align="left">cityid, countryid, bankid</td></tr>
+    </table>
+  >];
+
+  prod [label=<
+    <table border="0" cellborder="1" cellspacing="0" cellpadding="4">
+    <tr><td bgcolor="#D6EAF8"><b>product</b><br/><font point-size="8">товары · 1 545 строк</font></td></tr>
+    <tr><td align="left"><u>id</u> : bigint (PK)</td></tr>
+    <tr><td align="left">productid, cspcid</td></tr>
+    <tr><td align="left">description</td></tr>
+    <tr><td align="left">CategoryID → category</td></tr>
+    <tr><td align="left">SizeID → size</td></tr>
+    </table>
+  >];
+
+  cat [label=<
+    <table border="0" cellborder="1" cellspacing="0" cellpadding="4">
+    <tr><td bgcolor="#D6EAF8"><b>category</b><br/><font point-size="8">категории · 158 строк</font></td></tr>
+    <tr><td align="left"><u>id</u> : bigint (PK)</td></tr>
+    <tr><td align="left">description</td></tr>
+    </table>
+  >];
+
+  stor [label=<
+    <table border="0" cellborder="1" cellspacing="0" cellpadding="4">
+    <tr><td bgcolor="#D6EAF8"><b>storages</b><br/><font point-size="8">склады · 1 строка</font></td></tr>
+    <tr><td align="left"><u>id</u> : bigint (PK)</td></tr>
+    <tr><td align="left">description</td></tr>
+    <tr><td align="left">ResponsibleID → personnel</td></tr>
+    </table>
+  >];
+
+  sz [label=<
+    <table border="0" cellborder="1" cellspacing="0" cellpadding="4">
+    <tr><td bgcolor="#D6EAF8"><b>size</b><br/><font point-size="8">фасовки · 78 строк</font></td></tr>
+    <tr><td align="left"><u>ID</u> : bigint (PK)</td></tr>
+    <tr><td align="left">description</td></tr>
+    </table>
+  >];
+
+  pers [label=<
+    <table border="0" cellborder="1" cellspacing="0" cellpadding="4">
+    <tr><td bgcolor="#D6EAF8"><b>personnel</b><br/><font point-size="8">сотрудники · 109 строк</font></td></tr>
+    <tr><td align="left"><u>personid</u> : int (PK)</td></tr>
+    <tr><td align="left">lastname, firstname</td></tr>
+    </table>
+  >];
+
+  pl [label=<
+    <table border="0" cellborder="1" cellspacing="0" cellpadding="4">
+    <tr><td bgcolor="#FDEBD0"><b>pricelist</b><br/><font point-size="8">прайс-листы · 24 797 строк</font></td></tr>
+    <tr><td align="left"><u>id</u> : bigint (PK)</td></tr>
+    <tr><td align="left">vendorid → vendors</td></tr>
+    <tr><td align="left">productid → product</td></tr>
+    <tr><td align="left">groupid → pricegroup</td></tr>
+    <tr><td align="left">basecost, dateeff</td></tr>
+    </table>
+  >];
+
+  pg [label=<
+    <table border="0" cellborder="1" cellspacing="0" cellpadding="4">
+    <tr><td bgcolor="#D6EAF8"><b>pricegroup</b><br/><font point-size="8">группы цен · 4 строки</font></td></tr>
+    <tr><td align="left"><u>pricegroupid</u> : int (PK)</td></tr>
+    <tr><td align="left">description</td></tr>
+    </table>
+  >];
+
+  rec [label=<
+    <table border="0" cellborder="1" cellspacing="0" cellpadding="4">
+    <tr><td bgcolor="#EAECEE"><b>receiving</b><br/><font point-size="8">legacy-приёмка · 17 строк (2002–2003)</font></td></tr>
+    <tr><td align="left">transnumber</td></tr>
+    <tr><td align="left">vendorid → vendors (legacy)</td></tr>
+    <tr><td align="left">id → product (legacy)</td></tr>
+    <tr><td align="left">quantity, price, amount</td></tr>
+    </table>
+  >];
+
+  ord [label=<
+    <table border="0" cellborder="1" cellspacing="0" cellpadding="4">
+    <tr><td bgcolor="#EAECEE"><b>orders</b><br/><font point-size="8">legacy-заказы · 6 строк</font></td></tr>
+    <tr><td align="left">transnumber</td></tr>
+    <tr><td align="left">vendorid → vendors (legacy)</td></tr>
+    <tr><td align="left">orderquantity, multiple</td></tr>
+    </table>
+  >];
+
+  ovi [label=<
+    <table border="0" cellborder="1" cellspacing="0" cellpadding="4">
+    <tr><td bgcolor="#EAECEE"><b>ordervendorinfo</b><br/><font point-size="8">условия заказа · 0 строк</font></td></tr>
+    <tr><td align="left"><u>id</u> : bigint (PK)</td></tr>
+    <tr><td align="left">vendorid → vendors</td></tr>
+    <tr><td align="left">productid → product</td></tr>
+    <tr><td align="left">minfororder, cost</td></tr>
+    </table>
+  >];
+
+  fob [label=<
+    <table border="0" cellborder="1" cellspacing="0" cellpadding="4">
+    <tr><td bgcolor="#EAECEE"><b>fob</b><br/><font point-size="8">условия поставки · 0 строк</font></td></tr>
+    <tr><td align="left"><u>id</u> : bigint (PK)</td></tr>
+    <tr><td align="left">description</td></tr>
+    </table>
+  >];
+
+  so -> jd [arrowtail=tee, arrowhead=crow, dir=both, label="1:N"];
+  so -> sot [arrowtail=tee, arrowhead=crow, dir=both, label="1:N"];
+  so -> prod [arrowtail=tee, arrowhead=crow, dir=both, label="1:N"];
+  so -> vend [arrowtail=tee, arrowhead=crow, dir=both, label="1:N"];
+  so -> stor [arrowtail=tee, arrowhead=crow, dir=both, label="1:N"];
+  so -> sz [arrowtail=tee, arrowhead=crow, dir=both, label="1:N"];
+  jd -> jt [arrowtail=tee, arrowhead=crow, dir=both, label="1:N"];
+  jd -> jtd [arrowtail=tee, arrowhead=crow, dir=both, label="1:N"];
+  jd -> cmp [arrowtail=tee, arrowhead=crow, dir=both, label="1:N"];
+  jd -> pers [arrowtail=tee, arrowhead=crow, dir=both, label="1:N"];
+  prod -> cat [arrowtail=tee, arrowhead=crow, dir=both, label="1:N"];
+  prod -> sz [arrowtail=tee, arrowhead=crow, dir=both, label="1:N", style=dashed, constraint=false];
+  stor -> pers [arrowtail=tee, arrowhead=crow, dir=both, label="1:N", style=dashed, constraint=false];
+  pl -> vend [arrowtail=tee, arrowhead=crow, dir=both, label="1:N"];
+  pl -> prod [arrowtail=tee, arrowhead=crow, dir=both, label="1:N"];
+  pl -> pg [arrowtail=tee, arrowhead=crow, dir=both, label="1:N"];
+  ovi -> vend [arrowtail=tee, arrowhead=crow, dir=both, label="1:N", style=dashed];
+  ovi -> prod [arrowtail=tee, arrowhead=crow, dir=both, label="1:N", style=dashed];
+  rec -> vend [arrowtail=tee, arrowhead=crow, dir=both, label="1:N", style=dashed];
+  ord -> vend [arrowtail=tee, arrowhead=crow, dir=both, label="1:N", style=dashed];
+}

@@ -1,0 +1,183 @@
+// ER-диаграмма 4: Анализ работы персонала
+digraph ER4 {
+  rankdir=LR;
+  splines=polyline;
+  nodesep=0.5;
+  ranksep=1.2;
+  graph [fontname="DejaVu Sans", fontsize=14, label="Анализ работы персонала (шаг: полгода, квартал)\nоранжевый — факты, голубой — справочники, серый — пустые", labelloc=t, labeljust=c];
+  node [shape=none, fontname="DejaVu Sans", fontsize=10];
+  edge [fontname="DejaVu Sans", fontsize=9, color="#555555", arrowsize=0.9];
+
+  pers [label=<
+    <table border="0" cellborder="1" cellspacing="0" cellpadding="4">
+    <tr><td bgcolor="#D6EAF8"><b>personnel</b><br/><font point-size="8">сотрудники · 109 строк</font></td></tr>
+    <tr><td align="left"><u>personid</u> : int (PK)</td></tr>
+    <tr><td align="left">lastname, firstname, middlename</td></tr>
+    <tr><td align="left">securityaccess → securityaccess</td></tr>
+    <tr><td align="left">cityid → city</td></tr>
+    <tr><td align="left">flagpos, flagsales, flagrefunds</td></tr>
+    <tr><td align="left">flagdiscounts, flagreports</td></tr>
+    <tr><td align="left">cashdrawer, bartender</td></tr>
+    </table>
+  >];
+
+  sec [label=<
+    <table border="0" cellborder="1" cellspacing="0" cellpadding="4">
+    <tr><td bgcolor="#D6EAF8"><b>securityaccess</b><br/><font point-size="8">уровни доступа · 4 строки</font></td></tr>
+    <tr><td align="left">securityaccessid</td></tr>
+    <tr><td align="left">description</td></tr>
+    </table>
+  >];
+
+  city [label=<
+    <table border="0" cellborder="1" cellspacing="0" cellpadding="4">
+    <tr><td bgcolor="#D6EAF8"><b>city</b><br/><font point-size="8">города · 5 строк</font></td></tr>
+    <tr><td align="left"><u>cityid</u> : int (PK)</td></tr>
+    <tr><td align="left">name</td></tr>
+    </table>
+  >];
+
+  jr [label=<
+    <table border="0" cellborder="1" cellspacing="0" cellpadding="4">
+    <tr><td bgcolor="#FDEBD0"><b>journal</b><br/><font point-size="8">кассовые операции · 225 681 строка</font></td></tr>
+    <tr><td align="left"><u>transnumber</u> : bigint (PK)</td></tr>
+    <tr><td align="left">loginid → personnel</td></tr>
+    <tr><td align="left">transtype → transtype</td></tr>
+    <tr><td align="left">receiptn, amount, dater</td></tr>
+    </table>
+  >];
+
+  js [label=<
+    <table border="0" cellborder="1" cellspacing="0" cellpadding="4">
+    <tr><td bgcolor="#FDEBD0"><b>bm_JournalSessions</b><br/><font point-size="8">сессии · 174 072 строки</font></td></tr>
+    <tr><td align="left"><u>ID</u> : bigint (PK)</td></tr>
+    <tr><td align="left">PersonID → personnel</td></tr>
+    <tr><td align="left">Type, Message, IsError</td></tr>
+    <tr><td align="left">DateAdd, UserAdd</td></tr>
+    </table>
+  >];
+
+  jd [label=<
+    <table border="0" cellborder="1" cellspacing="0" cellpadding="4">
+    <tr><td bgcolor="#FDEBD0"><b>bm_JournalBarnetDocs</b><br/><font point-size="8">документы · 55 149 строк</font></td></tr>
+    <tr><td align="left"><u>ID</u> : bigint (PK)</td></tr>
+    <tr><td align="left">PersonID → personnel</td></tr>
+    <tr><td align="left">DocumentTypeID, Period</td></tr>
+    <tr><td align="left">Amount, CompanyID</td></tr>
+    </table>
+  >];
+
+  bonus [label=<
+    <table border="0" cellborder="1" cellspacing="0" cellpadding="4">
+    <tr><td bgcolor="#FDEBD0"><b>bm_BonusHistory</b><br/><font point-size="8">бонусы · 44 866 строк</font></td></tr>
+    <tr><td align="left"><u>ID</u> : bigint (PK)</td></tr>
+    <tr><td align="left">PersonID → personnel</td></tr>
+    <tr><td align="left">ClientID → clients</td></tr>
+    <tr><td align="left">BonusValue, TicketNumber, Period</td></tr>
+    </table>
+  >];
+
+  cl [label=<
+    <table border="0" cellborder="1" cellspacing="0" cellpadding="4">
+    <tr><td bgcolor="#D6EAF8"><b>clients</b><br/><font point-size="8">покупатели · 1 494 строки</font></td></tr>
+    <tr><td align="left"><u>id</u> : bigint (PK)</td></tr>
+    <tr><td align="left">clientid, lastname</td></tr>
+    </table>
+  >];
+
+  sh [label=<
+    <table border="0" cellborder="1" cellspacing="0" cellpadding="4">
+    <tr><td bgcolor="#FDEBD0"><b>bm_ShiftsOperations</b><br/><font point-size="8">смены · 1 строка</font></td></tr>
+    <tr><td align="left"><u>ID</u> : bigint (PK)</td></tr>
+    <tr><td align="left">ShiftNumber, Amount, DateAdd</td></tr>
+    <tr><td align="left">PersonalID → personnel</td></tr>
+    <tr><td align="left">CompanyID → bm_Companies</td></tr>
+    </table>
+  >];
+
+  shv [label=<
+    <table border="0" cellborder="1" cellspacing="0" cellpadding="4">
+    <tr><td bgcolor="#FDEBD0"><b>bm_ShiftsOperations_Values</b><br/><font point-size="8">показатели смен · 0 строк</font></td></tr>
+    <tr><td align="left"><u>ID</u> : bigint (PK)</td></tr>
+    <tr><td align="left">ParentID → bm_ShiftsOperations (FK)</td></tr>
+    <tr><td align="left">Pattern, Description, Value</td></tr>
+    </table>
+  >];
+
+  cmp [label=<
+    <table border="0" cellborder="1" cellspacing="0" cellpadding="4">
+    <tr><td bgcolor="#D6EAF8"><b>bm_Companies</b><br/><font point-size="8">юрлица · 1 строка</font></td></tr>
+    <tr><td align="left"><u>ID</u> : bigint (PK)</td></tr>
+    <tr><td align="left">CompanyName</td></tr>
+    </table>
+  >];
+
+  msgs [label=<
+    <table border="0" cellborder="1" cellspacing="0" cellpadding="4">
+    <tr><td bgcolor="#EAECEE"><b>personnelmessages</b><br/><font point-size="8">сообщения · 0 строк</font></td></tr>
+    <tr><td align="left">id</td></tr>
+    <tr><td align="left">personfrom → personnel</td></tr>
+    <tr><td align="left">personto → personnel</td></tr>
+    <tr><td align="left">messagetime, message</td></tr>
+    </table>
+  >];
+
+  cc [label=<
+    <table border="0" cellborder="1" cellspacing="0" cellpadding="4">
+    <tr><td bgcolor="#EAECEE"><b>closingcount</b><br/><font point-size="8">пересчёт при закрытии · 0 строк</font></td></tr>
+    <tr><td align="left"><u>id</u> : bigint (PK)</td></tr>
+    <tr><td align="left">storeid → environment (FK)</td></tr>
+    <tr><td align="left">productid → product (FK)</td></tr>
+    <tr><td align="left">onhand, closingcount, closingcountdate</td></tr>
+    </table>
+  >];
+
+  acc [label=<
+    <table border="0" cellborder="1" cellspacing="0" cellpadding="4">
+    <tr><td bgcolor="#EAECEE"><b>addclosingcount</b><br/><font point-size="8">действия при закрытии · 0 строк</font></td></tr>
+    <tr><td align="left"><u>ID</u> : bigint (PK)</td></tr>
+    <tr><td align="left">ActionID → features (FK)</td></tr>
+    <tr><td align="left">Description, Bonus, Percent</td></tr>
+    </table>
+  >];
+
+  feat [label=<
+    <table border="0" cellborder="1" cellspacing="0" cellpadding="4">
+    <tr><td bgcolor="#D6EAF8"><b>features</b><br/><font point-size="8">функции/акции · справочник</font></td></tr>
+    <tr><td align="left"><u>id</u> : bigint (PK)</td></tr>
+    <tr><td align="left">description, ActionTypeID</td></tr>
+    </table>
+  >];
+
+  env [label=<
+    <table border="0" cellborder="1" cellspacing="0" cellpadding="4">
+    <tr><td bgcolor="#D6EAF8"><b>environment</b><br/><font point-size="8">окружение · справочник</font></td></tr>
+    <tr><td align="left"><u>id</u> : bigint (PK)</td></tr>
+    <tr><td align="left">enviro1, enviro1name</td></tr>
+    </table>
+  >];
+
+  prod [label=<
+    <table border="0" cellborder="1" cellspacing="0" cellpadding="4">
+    <tr><td bgcolor="#D6EAF8"><b>product</b><br/><font point-size="8">товары · 1 545 строк</font></td></tr>
+    <tr><td align="left"><u>id</u> : bigint (PK)</td></tr>
+    <tr><td align="left">description</td></tr>
+    </table>
+  >];
+
+  pers -> sec [arrowtail=tee, arrowhead=crow, dir=both, label="1:N"];
+  pers -> city [arrowtail=tee, arrowhead=crow, dir=both, label="1:N"];
+  jr -> pers [arrowtail=tee, arrowhead=crow, dir=both, label="1:N"];
+  js -> pers [arrowtail=tee, arrowhead=crow, dir=both, label="1:N"];
+  jd -> pers [arrowtail=tee, arrowhead=crow, dir=both, label="1:N"];
+  bonus -> pers [arrowtail=tee, arrowhead=crow, dir=both, label="1:N"];
+  bonus -> cl [arrowtail=tee, arrowhead=crow, dir=both, label="1:N"];
+  sh -> pers [arrowtail=tee, arrowhead=crow, dir=both, label="1:N"];
+  sh -> cmp [arrowtail=tee, arrowhead=crow, dir=both, label="1:N"];
+  shv -> sh [arrowtail=tee, arrowhead=crow, dir=both, label="1:N"];
+  msgs -> pers [arrowtail=tee, arrowhead=crow, dir=both, label="1:N (personfrom)", style=dashed];
+  msgs -> pers [arrowtail=tee, arrowhead=crow, dir=both, label="1:N (personto)", style=dashed, constraint=false];
+  cc -> env [arrowtail=tee, arrowhead=crow, dir=both, label="1:N", style=dashed];
+  cc -> prod [arrowtail=tee, arrowhead=crow, dir=both, label="1:N", style=dashed];
+  acc -> feat [arrowtail=tee, arrowhead=crow, dir=both, label="1:N", style=dashed];
+}
