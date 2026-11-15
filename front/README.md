@@ -208,15 +208,3 @@ order by "Остаток" desc
 ![Результат: остаток на конец недели](_Images/05_stock_weekly.png)
 
 ![ER-диаграмма](ER/05_stock.png)
-
----
-
-## Итог
-
-| Направление | Данные | Основной источник |
-|---|---|---|
-| Закупки (месяц) | ✅ | bm_StorageOperations + bm_JournalBarnetDocs |
-| Продажи (месяц) | ✅ | journal + bm_Journal_Details |
-| Поставщики (месяц) | ✅ | vendors + история в bm_StorageOperations |
-| Персонал (полгода/квартал) | ✅ | personnel + journal + bm_JournalBarnetDocs |
-| Остатки (неделя) | ✅ | bm_StorageOperations.Count |
