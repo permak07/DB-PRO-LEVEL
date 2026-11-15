@@ -1,4 +1,9 @@
 .env
 _Infra/pgadmin/
 _Infra/scripts/Studies/
+_Infra/backup/
+_Infra/mssql-data/
 example*
+AGENTS.md
+front/_Images/
+front/ER/
