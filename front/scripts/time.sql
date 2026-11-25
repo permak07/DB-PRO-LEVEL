@@ -1,7 +1,7 @@
 -- Ресурс (метрика) "Время": структура и наполнение
 do $$
 declare
-	v_date date := date '2020-01-01';
+	v_date date := date '2012-01-01';
 	v_months text[] := array[
 		'Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь',
 		'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'
@@ -30,8 +30,17 @@ begin
 	alter table dim_time add primary key (id);
 	alter table dim_time add constraint unique_dim_time_id unique (time_id);
 	comment on table dim_time is 'Метрика времени: код YYYYMM, границы месяца, квартал';
+	comment on column dim_time.id is 'Внутренний код записи';
+	comment on column dim_time.time_id is 'Код месяца в формате YYYYMM';
+	comment on column dim_time.date_start is 'Дата начала месяца';
+	comment on column dim_time.date_end is 'Дата окончания месяца';
+	comment on column dim_time.month_name is 'Название месяца';
+	comment on column dim_time.year is 'Год';
+	comment on column dim_time.quarter_num is 'Номер квартала';
+	comment on column dim_time.quarter_name is 'Название квартала';
+	comment on column dim_time.date_add is 'Дата добавления записи';
 
-	-- Наполнение календарём на 2020-2026 гг. (84 месяца)
+	-- Наполнение календарём на 2012-2026 гг. (180 месяцев)
 	while v_date <= date '2026-12-01' loop
 		v_quarter := (extract(month from v_date)::int - 1) / 3 + 1;
 
